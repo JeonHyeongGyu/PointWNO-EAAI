@@ -1,0 +1,59 @@
+{
+ "aggregation": "per model: mean over the valid cases (NACA / nozzle) or valid sides (RAE); per seed: paired difference a - b of the same-seed model means; across seeds: mean, SD, 95 % t interval (df 2)",
+ "case_rule": "GT-based, frozen in configs/gt_shock_cases.json before any benchmark model exists; a case / side without a GT shock receives NO shock metric",
+ "claim_rule": {
+  "FNO_shock_advantage_on_dataset": "symmetric",
+  "V2_shock_advantage_on_dataset": "BOTH primaries 'V2 consistently lower' in the dataset's MAIN pair (nozzle: in at least one main pair) AND neither guard metric 'V2 consistently higher' AND, where a decision_context pair exists (NACA F1, nozzle F11), both primaries are also not 'FNO consistently lower' there",
+  "otherwise": "no shock-capturing difference established on that dataset",
+  "pooling": "datasets are never pooled into one ranking; Point / Pure models never mixed",
+  "secondary": "secondary metrics alone (in particular TV) never support a shock-capturing claim"
+ },
+ "cost": "training s/epoch and GPU-h from each run's own log; inference ms/case and peak memory measured in ONE evaluation job per dataset for every model of that dataset (nozzle F10 / F11 / W11: timing of their own D8C / F10M jobs, flagged)",
+ "failure_policy": "failed cases are never dropped silently: they are counted per model; the metric of a failed case is NaN (never imputed); a pair whose two models have different failure counts on a metric is flagged 'failure-confounded' next to its verdict",
+ "failure_rates": [
+  "GT shock present (denominator)",
+  "predicted shock not detected (rae_shock.detect / nozzle present flag)",
+  "thickness not computable (profile_metrics failure code)",
+  "pressure ratio not computable (nozzle floor)",
+  "physically invalid prediction (p <= 0 from Cp; nozzle p <= 0 / floor)",
+  "non-finite metric"
+ ],
+ "guard": [
+  "validation loss (best checkpoint)",
+  "global mean NRMSE"
+ ],
+ "hypothesis": "PointWNO with the canonical V2 kernel captures shocks differently from (better or worse than) a Fourier PointFNO of equal parameter count; no direction is assumed",
+ "naca_note": "NACA is transonic (M 0.65; 56/120 cases with an LH shock, 7/12 validation cases); it is a shock benchmark on its valid cases and a variable-geometry benchmark on all 12",
+ "primary": {
+  "P1_shock_region_pressure_nrmse": {
+   "naca": "Cp NRMSE (train min-max range) over the frozen GT shock region points (LH candidate box)",
+   "nozzle": "region.shock.p.nrmse (nozzle_metrics_r1_v1, unchanged)",
+   "rae": "nrmse_Cp_shock_band (rae_metrics, Lovely-Haimes band of the GT grid, unchanged)"
+  },
+  "P2_shock_thickness_abs_log_ratio": {
+   "naca": "|ln(width_10_90 pred / GT)| of upper-surface Cp, window +-0.06 c at the frozen GT anchor (shock/profile_metrics)",
+   "nozzle": "|ln smear_ratio| of the axis shock (nozzle_metrics_r1_v1 width_10_90 pred / GT, unchanged)",
+   "rae": "same on every GT shock side (anchor = CFD shock x); GT = grid GT sampled on the surface"
+  }
+ },
+ "protocol_id": "pointwno_v2_shock_eval_v1",
+ "registered": "2026-11-11",
+ "secondary_descriptive": [
+  "shock location |error|",
+  "shock pressure-jump |rel. error|",
+  "pressure-gradient error",
+  "post-shock overshoot",
+  "upstream undershoot",
+  "TV |rel. error|",
+  "spurious oscillation",
+  "global field NRMSE (mean over targets)",
+  "validation loss",
+  "train s/epoch",
+  "GPU-h",
+  "peak memory",
+  "inference ms/case",
+  "failure rates"
+ ],
+ "validation_only": true,
+ "verdict_rule": "'a consistently lower' only if all 3 same-seed differences < 0 AND the 95 % t interval excludes 0; symmetric for b; otherwise 'no detectable difference at n = 3'. Never a p-value or significance claim"
+}

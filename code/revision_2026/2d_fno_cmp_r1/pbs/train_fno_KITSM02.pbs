@@ -1,0 +1,51 @@
+#!/bin/bash
+#PBS -N EAAI_fno_train
+#PBS -q priv_g1_csi
+#PBS -l select=1:ncpus=8:ngpus=1:mem=64gb
+#PBS -l walltime=06:00:00
+#PBS -j oe
+#PBS -r n
+#
+# EAAI-26-17015 2D FNO comparison stage: 500 epochs of ONE FNO run (RUN=FNO_F1_L6W32M34 | FNO_F2_L4W83M16, SEED=0 | 1 | 2).
+# PREPARED ONLY; the AUTHOR submits, after smoke_fno_KITSM02.pbs wrote results/fno2d_cmp_r1_smoke/gates/<RUN>_seed<SEED>.json for this
+# exact package. No resume, no overwrite: the run directory must not exist. WNO C3 is never trained here (reused).
+# Output: results/fno2d_cmp_r1/$RUN/seed$SEED/ (complete.json when finished); GPU memory samples:
+#         results/fno2d_cmp_r1_gpumon/train_<RUN>_seed<SEED>_<job>.csv
+#   qsub -v EAAI_ROOT=...,PY=...,NPZ=...,RUN=FNO_F1_L6W32M34,SEED=0 train_fno_KITSM02.pbs
+set -u
+EAAI_ROOT="${EAAI_ROOT:?}"; PY="${PY:?}"; NPZ="${NPZ:?}"; RUN="${RUN:?}"; SEED="${SEED:?}"
+P=code/revision_2026/2d_fno_cmp_r1; O=code/revision_2026/2d_original_r1
+G=results/fno2d_cmp_r1_smoke/gates/${RUN}_seed${SEED}.json; OUT=results/fno2d_cmp_r1/$RUN/seed$SEED
+ORIG_SUMS_SHA=2e33cb1cca9a4fd226f731a896731fea89cc3d785fd46637c094c68f2d165e66
+cd "$EAAI_ROOT" || exit 1
+echo "=== job ${PBS_JOBID:-none} | $(hostname) | $(date) | $RUN seed $SEED"
+case "$SEED" in
+    0|1|2) ;;
+    *) echo "FATAL seed $SEED is not registered (0 | 1 | 2)"; exit 2;;
+esac
+case "$RUN" in
+    FNO_F1_L6W32M34|FNO_F2_L4W83M16) ;;
+    *) echo "FATAL run $RUN is not registered (FNO_F1_L6W32M34 | FNO_F2_L4W83M16; WNO C3 is reused, never trained here)"; exit 2;;
+esac
+echo "$ORIG_SUMS_SHA  $O/SHA256SUMS_orig2d.txt" | sha256sum -c --quiet || { echo "FATAL ORIG2D package manifest is not the registered one"; exit 4; }
+sha256sum -c --quiet $O/SHA256SUMS_orig2d.txt || { echo "FATAL ORIG2D package files differ"; exit 4; }
+sha256sum -c --quiet $P/SHA256SUMS_fno.txt || { echo "FATAL FNO package files differ from SHA256SUMS_fno.txt"; exit 4; }
+test -f $G || { echo "FATAL no $G (submit smoke_fno_KITSM02.pbs first; this run needs its own passed smoke)"; exit 8; }
+FNO_SHA=$(sha256sum $P/SHA256SUMS_fno.txt | cut -d' ' -f1)
+"$PY" -B -c "import json,sys; g=json.load(open('$G')); sys.exit(0 if g.get('ok') is True and g.get('run')=='$RUN' and g.get('seed')==$SEED and g.get('fno_sums_sha256')=='$FNO_SHA' and g.get('orig2d_sums_sha256')=='$ORIG_SUMS_SHA' else 1)" \
+    || { echo "FATAL $G is not a passed smoke of this package / run / seed"; exit 8; }
+test -e $OUT && { echo "FATAL $OUT exists (no resume, no overwrite): move it aside by hand"; exit 5; }
+FREE_GB=$(( $(df -Pk "$EAAI_ROOT" | awk 'NR==2{print $4}') / 1048576 )); [ "$FREE_GB" -ge 2 ] || { echo "FATAL only $FREE_GB GB free (need 2)"; exit 15; }
+export PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg
+nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv
+mkdir -p results/fno2d_cmp_r1_gpumon
+MON=results/fno2d_cmp_r1_gpumon/train_${RUN}_seed${SEED}_${PBS_JOBID%%.*}.csv; MP=""
+if [ -n "${CUDA_VISIBLE_DEVICES:-}" ] && [ "${CUDA_VISIBLE_DEVICES#*,}" = "$CUDA_VISIBLE_DEVICES" ] && [ ! -e "$MON" ]; then
+    nvidia-smi -i "$CUDA_VISIBLE_DEVICES" --query-gpu=timestamp,memory.used --format=csv -l 5 > "$MON" 2>&1 & MP=$!
+else
+    echo "=== GPU memory sampling skipped (CUDA_VISIBLE_DEVICES='${CUDA_VISIBLE_DEVICES:-}' or $MON exists); peak_cuda_mem_mb is still recorded by the runner"
+fi
+"$PY" -B $P/train_fno2d.py --registry $P/configs/fno_registry.json --trial "$RUN" --seed "$SEED" --npz "$NPZ" --device cuda 2>&1 | grep -v "^case "
+S=${PIPESTATUS[0]}
+[ -n "$MP" ] && kill "$MP" 2>/dev/null
+echo "=== exit $S | $(date)"; exit $S

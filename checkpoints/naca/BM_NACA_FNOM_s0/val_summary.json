@@ -1,0 +1,18 @@
+{
+ "best_epoch": 152,
+ "best_sha256": "c309a6b863d0d8d39e8684f80f214a317572638253ae12fa2025c07e5ad8d073",
+ "best_val_loss": 0.003321025287732482,
+ "epochs_completed": 500,
+ "n_val_cases": 12,
+ "peak_alloc_mib_max": 17323.9,
+ "rec_sha": "d17ecdd4cd63b375b41e652374a47b60f1ebbff428619b273bfb6a5161d54d06",
+ "run_id": "BM_NACA_FNOM_s0",
+ "test_evaluated": false,
+ "train_s_per_epoch_median": 4.3635,
+ "train_s_total": 2189.4,
+ "val_case_mean_NRMSE": {
+  "pressure_coefficient": 0.014467230221877495,
+  "x_momentum": 0.09420107988019784,
+  "y_momentum": 0.02517037745565176
+ }
+}

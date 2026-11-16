@@ -1,0 +1,120 @@
+{
+ "arm": "V2J2",
+ "cost": {
+  "best_epoch": 497,
+  "eval_peak_mem_mib": 12838.68115234375,
+  "gpu": "NVIDIA H100 NVL",
+  "infer_ms_per_case_median": 33.267221646383405,
+  "params_trainable_real": 21801731,
+  "timing_job": "105017.KITSM02",
+  "train_gpu_h": 0.6545644444444444,
+  "train_peak_mem_mib": 17473.0,
+  "train_s_per_epoch_median": 4.682
+ },
+ "dataset": "naca",
+ "failures": {
+  "false_surface_shock": {
+   "cases": [],
+   "count": 2,
+   "den": 5,
+   "rate": 0.4
+  },
+  "gt_shock_present": {
+   "cases": [],
+   "count": 7,
+   "den": 12,
+   "rate": 0.5833333333333334
+  },
+  "nonfinite_metric": {
+   "cases": [],
+   "count": 0,
+   "den": 14,
+   "rate": 0.0
+  },
+  "physically_invalid_pred": {
+   "cases": [],
+   "count": 0,
+   "den": 12,
+   "rate": 0.0
+  },
+  "pred_shock_not_detected": {
+   "cases": [
+    74
+   ],
+   "count": 1,
+   "den": 7,
+   "rate": 0.14285714285714285
+  },
+  "thickness_not_computable": {
+   "cases": [],
+   "count": 0,
+   "den": 7,
+   "rate": 0.0
+  }
+ },
+ "metrics": {
+  "P1_shock_p_nrmse": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.030474802149859946
+  },
+  "P2_thickness_abs_log": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.2540862858446366
+  },
+  "global_nrmse_mean": {
+   "n_finite": 12,
+   "n_used": 12,
+   "value": 0.03348707414057145
+  },
+  "grad_err": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.28005708612765934
+  },
+  "jump_abs_rel_err": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.07080222308774382
+  },
+  "location_abs_err": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.017080008985714285
+  },
+  "post_overshoot": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.009390878440368958
+  },
+  "pre_undershoot": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.0955326465390196
+  },
+  "spurious_osc": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.04704292202494855
+  },
+  "thickness_ratio": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 1.2891578634707754
+  },
+  "tv_abs_rel_err": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.09895589999552556
+  },
+  "val_loss": {
+   "n_finite": 1,
+   "n_used": 1,
+   "value": 0.0016727288796876867
+  }
+ },
+ "model_id": "BM_NACA_V2J2_s1",
+ "seed": 1,
+ "source": "new"
+}

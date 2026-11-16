@@ -1,0 +1,118 @@
+{
+ "arm": "FNOM",
+ "cost": {
+  "best_epoch": 102,
+  "eval_peak_mem_mib": 12839.10986328125,
+  "gpu": "NVIDIA H100 NVL",
+  "infer_ms_per_case_median": 31.548508442938328,
+  "params_trainable_real": 21801731,
+  "timing_job": "105017.KITSM02",
+  "train_gpu_h": 0.6084641666666667,
+  "train_peak_mem_mib": 17323.9,
+  "train_s_per_epoch_median": 4.367
+ },
+ "dataset": "naca",
+ "failures": {
+  "false_surface_shock": {
+   "cases": [],
+   "count": 0,
+   "den": 5,
+   "rate": 0.0
+  },
+  "gt_shock_present": {
+   "cases": [],
+   "count": 7,
+   "den": 12,
+   "rate": 0.5833333333333334
+  },
+  "nonfinite_metric": {
+   "cases": [],
+   "count": 0,
+   "den": 14,
+   "rate": 0.0
+  },
+  "physically_invalid_pred": {
+   "cases": [],
+   "count": 0,
+   "den": 12,
+   "rate": 0.0
+  },
+  "pred_shock_not_detected": {
+   "cases": [],
+   "count": 0,
+   "den": 7,
+   "rate": 0.0
+  },
+  "thickness_not_computable": {
+   "cases": [],
+   "count": 0,
+   "den": 7,
+   "rate": 0.0
+  }
+ },
+ "metrics": {
+  "P1_shock_p_nrmse": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.03520814174117251
+  },
+  "P2_thickness_abs_log": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.36202852113580236
+  },
+  "global_nrmse_mean": {
+   "n_finite": 12,
+   "n_used": 12,
+   "value": 0.04377290484460764
+  },
+  "grad_err": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.33815669561758055
+  },
+  "jump_abs_rel_err": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.12544310652113788
+  },
+  "location_abs_err": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.017106388285714282
+  },
+  "post_overshoot": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.04532439260015029
+  },
+  "pre_undershoot": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.022413642324030123
+  },
+  "spurious_osc": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.08251132015453384
+  },
+  "thickness_ratio": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 1.4529671961537807
+  },
+  "tv_abs_rel_err": {
+   "n_finite": 7,
+   "n_used": 7,
+   "value": 0.08132918456956692
+  },
+  "val_loss": {
+   "n_finite": 1,
+   "n_used": 1,
+   "value": 0.003079810723041495
+  }
+ },
+ "model_id": "BM_NACA_FNOM_s1",
+ "seed": 1,
+ "source": "new"
+}

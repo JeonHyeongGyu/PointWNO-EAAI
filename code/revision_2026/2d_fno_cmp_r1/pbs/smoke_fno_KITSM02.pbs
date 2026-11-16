@@ -1,0 +1,93 @@
+#!/bin/bash
+#PBS -N EAAI_fno_smoke
+#PBS -q priv_g1_csi
+#PBS -l select=1:ncpus=8:ngpus=1:mem=64gb
+#PBS -l walltime=01:00:00
+#PBS -j oe
+#PBS -r n
+#
+# EAAI-26-17015 2D FNO comparison stage: 2-epoch smoke of each registered FNO run (F1 = FNO_F1_L6W32M34, F2 = FNO_F2_L4W83M16; seeds
+# 0, 1, 2). PREPARED ONLY; the AUTHOR submits. One SEPARATE gate per run: results/fno2d_cmp_r1_smoke/gates/<trial>_seed<s>.json, written
+# only when that run's smoke passed; it records the sha256 of SHA256SUMS_fno.txt and of the ORIG2D package manifest, the measured peak GPU
+# memory and the epoch time. A run whose gate exists is skipped; a failed run does not stop the others (exit 1 at the end if any failed).
+# Output: results/fno2d_cmp_r1_smoke/<trial>/seed<s>/smoke/.  The WNO C3 run_meta.json of the same seed is only read (torch / GPU).
+#   qsub -v EAAI_ROOT=...,PY=...,NPZ=...[,RUNS="FNO_F1_L6W32M34:0 ..."] smoke_fno_KITSM02.pbs
+set -u
+EAAI_ROOT="${EAAI_ROOT:?}"; PY="${PY:?}"; NPZ="${NPZ:?}"
+P=code/revision_2026/2d_fno_cmp_r1; O=code/revision_2026/2d_original_r1
+SOUT=results/fno2d_cmp_r1_smoke; GATES=$SOUT/gates
+ORIG_SUMS_SHA=2e33cb1cca9a4fd226f731a896731fea89cc3d785fd46637c094c68f2d165e66
+ALL_RUNS="FNO_F1_L6W32M34:0 FNO_F1_L6W32M34:1 FNO_F1_L6W32M34:2 FNO_F2_L4W83M16:0 FNO_F2_L4W83M16:1 FNO_F2_L4W83M16:2"
+RUNS="${RUNS:-$ALL_RUNS}"
+cd "$EAAI_ROOT" || exit 1
+echo "=== job ${PBS_JOBID:-none} | $(hostname) | $(date) | runs: $RUNS"
+for R in $RUNS; do case " $ALL_RUNS " in *" $R "*) ;; *) echo "FATAL run $R is not registered"; exit 2;; esac; done
+echo "$ORIG_SUMS_SHA  $O/SHA256SUMS_orig2d.txt" | sha256sum -c --quiet || { echo "FATAL ORIG2D package manifest is not the registered one"; exit 4; }
+sha256sum -c --quiet $O/SHA256SUMS_orig2d.txt || { echo "FATAL ORIG2D package files differ"; exit 4; }
+sha256sum -c --quiet $P/SHA256SUMS_fno.txt || { echo "FATAL FNO package files differ from SHA256SUMS_fno.txt"; exit 4; }
+FREE_GB=$(( $(df -Pk "$EAAI_ROOT" | awk 'NR==2{print $4}') / 1048576 )); [ "$FREE_GB" -ge 3 ] || { echo "FATAL only $FREE_GB GB free (smoke of 6 runs writes ~1.4 GB)"; exit 15; }
+export PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg
+nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv
+mkdir -p $GATES
+FNO_SHA=$(sha256sum $P/SHA256SUMS_fno.txt | cut -d' ' -f1)
+NFAIL=0
+for R in $RUNS; do
+    ID=${R%:*}; S=${R#*:}; G=$GATES/${ID}_seed${S}.json; D=$SOUT/$ID/seed$S
+    if [ -e "$G" ]; then echo "=== $ID seed $S: gate already present ($G), skipped"; continue; fi
+    if [ -e "$D" ]; then echo "FAIL $ID seed $S: $D exists (earlier smoke attempt: move it aside by hand)"; NFAIL=$((NFAIL + 1)); continue; fi
+    echo "=== smoke $ID seed $S | $(date)"
+    "$PY" -B $P/train_fno2d.py --registry $P/configs/fno_registry.json --trial $ID --seed $S --npz "$NPZ" --device cuda \
+        --max_epochs 2 --smoke_tag smoke 2>&1 | grep -v "^case "; X=${PIPESTATUS[0]}
+    if [ "$X" != 0 ]; then echo "FAIL $ID seed $S: smoke exit $X (no gate)"; NFAIL=$((NFAIL + 1)); continue; fi
+    "$PY" -B - "$P/configs/fno_registry.json" "$ID" "$S" "$D/smoke" "$G" "$FNO_SHA" "$ORIG_SUMS_SHA" "${PBS_JOBID:-none}" <<'PYEOF'
+import csv, hashlib, json, math, os, sys, time
+reg_path = sys.argv[1]
+reg = json.load(open(reg_path))
+rid, s, d, gpath, fno_sha, orig_sha, jobid = sys.argv[2], int(sys.argv[3]), sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8]
+t = [x for x in reg["trials"] if x["id"] == rid][0]
+need = ("run_meta.json", "metrics.csv", "pcwno_best.pt", "last_model.pt", "val_case_RMSE.csv", "val_summary.json", "SHA256SUMS_run.txt", "complete.json")
+miss = [f for f in need if not os.path.isfile(f"{d}/{f}")]
+if miss:
+    print(json.dumps({"ok": False, "missing": miss})); sys.exit(1)
+meta, vs = json.load(open(f"{d}/run_meta.json")), json.load(open(f"{d}/val_summary.json"))
+r = list(csv.DictReader(open(f"{d}/metrics.csv")))
+vc = list(csv.DictReader(open(f"{d}/val_case_RMSE.csv")))
+sums_ok = all(hashlib.sha256(open(f"{d}/{fn}", "rb").read()).hexdigest() == h
+              for h, fn in (ln.split(None, 1) for ln in open(f"{d}/SHA256SUMS_run.txt").read().split("\n") if ln))
+c3_meta_path = os.path.join(reg["wno_reference"]["runs"][str(s)]["dir"], "run_meta.json")       # read only: WNO C3 run of the same seed
+c3 = json.load(open(c3_meta_path)) if os.path.isfile(c3_meta_path) else None
+ck = {"two_epochs": len(r) == reg["smoke_epochs"],
+      "finite_losses": all(math.isfinite(float(x[k])) for x in r for k in ("train_total", "val_total")),
+      "operator_fno": meta["operator"] == "fno" and meta["fno"] == t["fno"],
+      "params": meta["params_trainable_real"] == t["params_trainable_real"],
+      "registry_sha": meta["registry_sha256"] == hashlib.sha256(open(reg_path, "rb").read()).hexdigest(),
+      "trial_id": meta["trial"] == rid,
+      "config_seed": meta["config"]["seed"] == s and meta["seed"] == s,
+      "out_dir": os.path.normpath(meta["out"]).endswith(os.path.join("results", "fno2d_cmp_r1_smoke", rid, f"seed{s}", "smoke")),
+      "rng_state_recorded": len(meta.get("rng_state_sha256_after_model", "")) == 64,
+      "test_blocked_12": meta["test_cases_blocked"] == 12,
+      "test_not_evaluated": vs["test_evaluated"] is False,
+      "val_cases_registry": sorted(int(x["global_data_id"]) for x in vc) == sorted(reg["split"]["val_idx"]),
+      "ckpt_size_within_0.1pct": abs(os.path.getsize(f"{d}/pcwno_best.pt") - t["ckpt_bytes_expected"]) < 1e-3 * t["ckpt_bytes_expected"],
+      "c3_run_meta_present": c3 is not None,
+      "same_torch_as_C3_same_seed": c3 is not None and meta["torch"] == c3["torch"],
+      "run_sums": sums_ok}
+es = [float(x["epoch_sec"]) for x in r]
+gate = dict(ok=all(ck.values()), run=rid, arm=t["arm"], seed=s, checks=ck, gpu=meta["gpu"], torch=meta["torch"],
+            c3_gpu=c3 and c3["gpu"], c3_torch=c3 and c3["torch"], same_gpu_as_C3_same_seed=c3 is not None and meta["gpu"] == c3["gpu"],
+            params_trainable_real=meta["params_trainable_real"], param_groups=meta["param_groups"], peak_cuda_mem_mb=vs["peak_cuda_mem_mb"],
+            epoch_sec=es, est_train_hours_500ep_from_epoch2=round(es[-1] * 500 / 3600, 2), ckpt_bytes=os.path.getsize(f"{d}/pcwno_best.pt"),
+            epoch1_train_total=float(r[0]["train_total"]), rng_state_sha256_after_model=meta["rng_state_sha256_after_model"],
+            fno_sums_sha256=fno_sha, orig2d_sums_sha256=orig_sha, pbs_jobid=jobid, finished=time.strftime("%Y-%m-%d %H:%M:%S"),
+            note="ckpt_size compares with the size measured locally (serialization overhead differs by a few kB between torch versions); "
+                 "a different GPU type than the C3 run of the same seed does not fail the gate but makes time / memory not comparable")
+print(json.dumps(gate, indent=1))
+if not gate["ok"]:
+    sys.exit(1)
+json.dump(gate, open(gpath, "x"), indent=1)
+PYEOF
+    X=$?
+    if [ "$X" = 0 ]; then echo "=== $ID seed $S smoke OK -> $G"; else echo "FAIL $ID seed $S: smoke check failed (no gate)"; NFAIL=$((NFAIL + 1)); fi
+done
+echo "=== smoke finished $(date) | failed runs: $NFAIL | gates: $(ls $GATES 2>/dev/null | tr '\n' ' ')"
+[ "$NFAIL" = 0 ] || exit 1

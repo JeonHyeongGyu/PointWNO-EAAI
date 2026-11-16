@@ -1,0 +1,7 @@
+{
+ "pass": true,
+ "recomputed_val_loss": 0.0016093179971600573,
+ "rel_diff": 0.0,
+ "stored_best_val_loss": 0.0016093179971600573,
+ "tol": 0.0001
+}

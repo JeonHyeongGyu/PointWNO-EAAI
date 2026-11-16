@@ -1,0 +1,98 @@
+{
+ "claims": {
+  "naca": {
+   "claim": "V2 shock-capturing advantage established on this dataset (frozen rule; n = 3, descriptive)",
+   "context_blocked_fno": false,
+   "context_blocked_v2": false,
+   "decision_context": {
+    "NACA-CTX-F1": {
+     "P1_shock_p_nrmse": "no detectable difference at n = 3",
+     "P2_thickness_abs_log": "no detectable difference at n = 3"
+    }
+   },
+   "main_pairs": {
+    "NACA-MAIN": {
+     "failure_confounded": false,
+     "fno_condition": false,
+     "v2_condition": true,
+     "verdicts": {
+      "P1_shock_p_nrmse": "V2J2 consistently lower",
+      "P2_thickness_abs_log": "V2J2 consistently lower",
+      "global_nrmse_mean": "V2J2 consistently lower",
+      "val_loss": "V2J2 consistently lower"
+     }
+    }
+   }
+  },
+  "nozzle": {
+   "claim": "no shock-capturing difference established on this dataset",
+   "context_blocked_fno": false,
+   "context_blocked_v2": false,
+   "decision_context": {
+    "NOZ-CTX-F11-C": {
+     "P1_shock_p_nrmse": "no detectable difference at n = 3",
+     "P2_thickness_abs_log": "no detectable difference at n = 3"
+    },
+    "NOZ-CTX-F11-S": {
+     "P1_shock_p_nrmse": "no detectable difference at n = 3",
+     "P2_thickness_abs_log": "no detectable difference at n = 3"
+    }
+   },
+   "main_pairs": {
+    "NOZ-MAIN-1": {
+     "failure_confounded": false,
+     "fno_condition": false,
+     "v2_condition": false,
+     "verdicts": {
+      "P1_shock_p_nrmse": "no detectable difference at n = 3",
+      "P2_thickness_abs_log": "no detectable difference at n = 3",
+      "global_nrmse_mean": "no detectable difference at n = 3",
+      "val_loss": "no detectable difference at n = 3"
+     }
+    },
+    "NOZ-MAIN-2": {
+     "failure_confounded": false,
+     "fno_condition": false,
+     "v2_condition": false,
+     "verdicts": {
+      "P1_shock_p_nrmse": "no detectable difference at n = 3",
+      "P2_thickness_abs_log": "no detectable difference at n = 3",
+      "global_nrmse_mean": "no detectable difference at n = 3",
+      "val_loss": "no detectable difference at n = 3"
+     }
+    }
+   }
+  },
+  "rae": {
+   "claim": "no shock-capturing difference established on this dataset",
+   "context_blocked_fno": false,
+   "context_blocked_v2": false,
+   "decision_context": {},
+   "main_pairs": {
+    "RAE-MAIN": {
+     "failure_confounded": false,
+     "fno_condition": false,
+     "v2_condition": false,
+     "verdicts": {
+      "P1_shock_p_nrmse": "no detectable difference at n = 3",
+      "P2_thickness_abs_log": "no detectable difference at n = 3",
+      "global_nrmse_mean": "no detectable difference at n = 3",
+      "val_loss": "no detectable difference at n = 3"
+     }
+    }
+   }
+  }
+ },
+ "missing_models": [
+  "rae/V3/s0",
+  "rae/V3/s1",
+  "rae/V3/s2"
+ ],
+ "n_models_found": 45,
+ "n_models_registered": 48,
+ "protocol_sha256": "30fc3641dab1b3c0793a35fc531bf41f3e3815f444b9c70a2982d05edddc71b8",
+ "registry_sha256": "636e4f1b027a29a990c49a52678202630b87d2f35a432d75709f916b66afa8a7",
+ "time": "2026-11-13T09:57:22",
+ "validation_only": true,
+ "version": "bm_collect_v1"
+}

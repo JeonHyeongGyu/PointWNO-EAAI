@@ -1,0 +1,494 @@
+{
+ "datasets": {
+  "naca": {
+   "arms": [
+    {
+     "arm": "V2J2",
+     "epochs": 500,
+     "model": {
+      "coef_grid": [
+       34,
+       26
+      ],
+      "init_generator_seed": null,
+      "kernel": "v2",
+      "level": 2,
+      "wavelet": "db2"
+     },
+     "params_trainable_real": 21801731,
+     "role": "MAIN WNO arm: canonical V2 (official WNO 2.0.0 kernel), db2 J2, coefficient grid 34x26",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "new",
+     "trainer": "naca/train_naca_bm.py"
+    },
+    {
+     "arm": "FNOM",
+     "epochs": 500,
+     "model": {
+      "kernel": "fno",
+      "modes": [
+       34,
+       26
+      ]
+     },
+     "params_trainable_real": 21801731,
+     "role": "MAIN FNO arm: FNO modes 34x26 = the V2 coefficient grid -> exactly equal parameter count",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "new",
+     "trainer": "naca/train_naca_bm.py"
+    },
+    {
+     "arm": "F1",
+     "epochs": 500,
+     "location": {
+      "ckpt": "pcwno_best.pt",
+      "registry_sha256": "8014affd3fbefb74812f1cce6ff19b310e56038a7f38000157e5048bc1779f7b",
+      "server_dir": "results/fno2d_cmp_r1/FNO_F1_L6W32M34/seed{seed}",
+      "trainer": "code/revision_2026/2d_fno_cmp_r1/train_fno2d.py"
+     },
+     "model": {
+      "kernel": "fno",
+      "modes": [
+       34,
+       34
+      ]
+     },
+     "params_trainable_real": 28486403,
+     "role": "CONTEXT FNO: incumbent FNO_F1_L6W32M34 (34x34 modes; best FNO width of the 2-D FNO capacity study W16/W32/W64/W128). REUSED, never retrained (protocol identical, audit/fno_reuse_audit.py)",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "reused"
+    },
+    {
+     "arm": "C3",
+     "epochs": 500,
+     "location": {
+      "ckpt": "pcwno_best.pt",
+      "server_dir": {
+       "0": "results/capacity_r1/CAP_C3_L6W32/seed0",
+       "1": "results/capacity_r1_seeds/CAP_C3_L6W32/seed1",
+       "2": "results/capacity_r1_seeds/CAP_C3_L6W32/seed2"
+      },
+      "trainer": "code/revision_2026/2d_original_r1/train_orig2d.py (backward r1_exact_autograd_v1)"
+     },
+     "model": {
+      "kernel": "v3",
+      "level": 1,
+      "wavelet": "db2"
+     },
+     "params_trainable_real": 28486403,
+     "role": "CONTEXT WNO: registered PointWNO V3 (official v3 Fourier-on-wavelet kernel) C3 L6W32. REUSED",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "reused"
+    }
+   ],
+   "epochs": 500,
+   "label": "NACA 4-digit, 2-D, M_inf 0.65, alpha 3 deg (transonic, variable geometry)",
+   "pairs": [
+    {
+     "a": "V2J2",
+     "b": "FNOM",
+     "id": "NACA-MAIN",
+     "kind": "main",
+     "note": "exactly equal parameters"
+    },
+    {
+     "a": "V2J2",
+     "b": "F1",
+     "id": "NACA-CTX-F1",
+     "kind": "decision_context",
+     "note": "incumbent FNO; F1 has +30.7 % parameters"
+    },
+    {
+     "a": "V2J2",
+     "b": "C3",
+     "id": "NACA-CTX-V3",
+     "kind": "context",
+     "note": "V2 vs registered V3 kernel"
+    },
+    {
+     "a": "C3",
+     "b": "F1",
+     "id": "NACA-CTX-V3FNO",
+     "kind": "context",
+     "note": "existing comparison"
+    }
+   ],
+   "split": "96/12/12 (manuscript split, test blocked)"
+  },
+  "nozzle": {
+   "arms": [
+    {
+     "arm": "V2C",
+     "epochs": 1000,
+     "model": {
+      "coef_grid": [
+       66,
+       10
+      ],
+      "kernel": "v2",
+      "level": 3
+     },
+     "model_id": "NOZ_WV_A_V2C_s{seed}",
+     "params_trainable_real": 16297350,
+     "role": "MAIN-1 WNO arm: canonical V2 J3 (66x10), 16.3 M; trained by the UNCHANGED variant package train_var.py (config NOZ_WV_A_V2C_s{seed}) into this package's nozzle root",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "new",
+     "trainer": "code/revision_2026/nozzle_point_wno_variant_r1/train_var.py",
+     "variant_config": "configs/main/NOZ_WV_A_V2C_s{seed}.json"
+    },
+    {
+     "arm": "V2S",
+     "epochs": 1000,
+     "model": {
+      "coef_grid": [
+       130,
+       18
+      ],
+      "kernel": "v2",
+      "level": 2
+     },
+     "model_id": "NOZ_WV_A_V2S_s{seed}",
+     "params_trainable_real": 57585030,
+     "role": "MAIN-2 WNO arm: canonical V2 J2 (130x18), 57.6 M (= W11 = F10 exactly)",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "new",
+     "trainer": "code/revision_2026/nozzle_point_wno_variant_r1/train_var.py",
+     "variant_config": "configs/main/NOZ_WV_A_V2S_s{seed}.json"
+    },
+    {
+     "arm": "F00",
+     "epochs": 1000,
+     "eval": "this package (evaluate_var reference)",
+     "model": {
+      "kernel": "fno",
+      "modes": [
+       66,
+       10
+      ]
+     },
+     "model_id": "ABL_REF_FNO_s{seed}",
+     "params_trainable_real": 16297350,
+     "role": "MAIN-1 FNO arm: registered A0 PointFNO 66x10 (= D8C F00 baseline), 16.3 M. REUSED (pinned A0, 1,000 epochs via the convergence extension); evaluated in this package's eval job",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "reused"
+    },
+    {
+     "arm": "W00",
+     "epochs": 1000,
+     "eval": "this package (evaluate_var reference)",
+     "model": {
+      "kernel": "v3",
+      "level": 2
+     },
+     "model_id": "ABL_REF_WNO_s{seed}",
+     "params_trainable_real": 16297350,
+     "role": "CONTEXT WNO V3: registered A0 PointWNO (v3 kernel db2 J2 33x5), 16.3 M. REUSED",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "reused"
+    },
+    {
+     "arm": "F10",
+     "epochs": 1000,
+     "eval": {
+      "0": "results/revision_2026/nozzle_point_hpo_r1/eval/{model_id}",
+      "1": "results/revision_2026/nozzle_f10_matched_completion_r1/eval/{model_id}",
+      "2": "results/revision_2026/nozzle_f10_matched_completion_r1/eval/{model_id}"
+     },
+     "model": {
+      "kernel": "fno",
+      "modes": [
+       130,
+       18
+      ]
+     },
+     "model_id": "NOZ_HPO_A_F10_s{seed}",
+     "params_trainable_real": 57585030,
+     "role": "MAIN-2 FNO arm: D8C candidate F10 130x18, 57.6 M. REUSED: s0 = D8C, s1/s2 = nozzle_f10_matched_completion_r1 (must be DONE first)",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "reused"
+    },
+    {
+     "arm": "F11",
+     "epochs": 1000,
+     "eval": {
+      "0": "results/revision_2026/nozzle_point_hpo_r1/eval/{model_id}",
+      "1": "results/revision_2026/nozzle_point_hpo_r1/eval/{model_id}",
+      "2": "results/revision_2026/nozzle_point_hpo_r1/eval/{model_id}"
+     },
+     "model": {
+      "kernel": "fno",
+      "modes": [
+       132,
+       20
+      ]
+     },
+     "model_id": "NOZ_HPO_A_F11_s{seed}",
+     "params_trainable_real": 64957830,
+     "role": "CONTEXT (decision-relevant): D8C HPO-selected FNO F11 132x20, 64.96 M (selection per the D8C SELECTION_LOCK, checked by preflight). REUSED, never dropped",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "reused"
+    },
+    {
+     "arm": "W11",
+     "epochs": 1000,
+     "eval": {
+      "0": "results/revision_2026/nozzle_point_hpo_r1/eval/{model_id}",
+      "1": "results/revision_2026/nozzle_point_hpo_r1/eval/{model_id}",
+      "2": "results/revision_2026/nozzle_point_hpo_r1/eval/{model_id}"
+     },
+     "model": {
+      "kernel": "v3",
+      "level": 1
+     },
+     "model_id": "NOZ_HPO_A_W11_s{seed}",
+     "params_trainable_real": 57585030,
+     "role": "CONTEXT WNO V3: D8C HPO-selected WNO W11 (v3 kernel db2 J1 65x9), 57.6 M. REUSED",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "reused"
+    }
+   ],
+   "epochs": 1000,
+   "label": "Axisymmetric nozzle plume, M_inf family, split A",
+   "pairs": [
+    {
+     "a": "V2C",
+     "b": "F00",
+     "id": "NOZ-MAIN-1",
+     "kind": "main",
+     "note": "16.3 M, exactly equal"
+    },
+    {
+     "a": "V2S",
+     "b": "F10",
+     "id": "NOZ-MAIN-2",
+     "kind": "main",
+     "note": "57.6 M, exactly equal"
+    },
+    {
+     "a": "V2S",
+     "b": "F11",
+     "id": "NOZ-CTX-F11-S",
+     "kind": "decision_context",
+     "note": "HPO-selected FNO (+12.8 % parameters)"
+    },
+    {
+     "a": "V2C",
+     "b": "F11",
+     "id": "NOZ-CTX-F11-C",
+     "kind": "decision_context",
+     "note": "HPO-selected FNO (4.0x parameters)"
+    },
+    {
+     "a": "V2C",
+     "b": "W00",
+     "id": "NOZ-CTX-V3-C",
+     "kind": "context",
+     "note": "V2 vs V3, 16.3 M"
+    },
+    {
+     "a": "V2S",
+     "b": "W11",
+     "id": "NOZ-CTX-V3-S",
+     "kind": "context",
+     "note": "V2 vs HPO-best V3, 57.6 M"
+    }
+   ],
+   "split": "33/6/7 split A (test never loaded)",
+   "variant_package_manifest": "6c7f17435dc9c4494590ff5d8a04f23ec36055a585cbb61518de8c2dd192ff45"
+  },
+  "rae": {
+   "arms": [
+    {
+     "arm": "V2J2",
+     "epochs": 1000,
+     "model": {
+      "coef_grid": [
+       34,
+       34
+      ],
+      "init_generator_seed": null,
+      "kernel": "v2",
+      "level": 2,
+      "wavelet": "db2"
+     },
+     "operator_params_real": 28409856,
+     "params_trainable_real": 28487140,
+     "role": "MAIN WNO arm: canonical V2, db2 J2, coefficient grid 34x34",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "new",
+     "trainer": "rae/train_rae_bm.py"
+    },
+    {
+     "arm": "FNO34",
+     "epochs": 1000,
+     "model": {
+      "kernel": "fno",
+      "modes": [
+       34,
+       34
+      ]
+     },
+     "operator_params_real": 28409856,
+     "params_trainable_real": 28487140,
+     "role": "MAIN FNO arm: registered RAE PointFNO (34x34 modes = the V2 grid), RETRAINED at 1,000 epochs",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "new",
+     "trainer": "rae/train_rae_bm.py"
+    },
+    {
+     "arm": "V3",
+     "epochs": 1000,
+     "model": {
+      "kernel": "v3",
+      "level": 1,
+      "omega": 4,
+      "wavelet": "db2"
+     },
+     "operator_params_real": 28409856,
+     "params_trainable_real": 28487140,
+     "role": "OPTIONAL CONTEXT: registered PointWNO V3 retrained at 1,000 epochs (V2 vs V3 at equal epochs). NOT in the default queue; submitted only with BM_INCLUDE_OPTIONAL=1",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "optional",
+     "trainer": "rae/train_rae_bm.py"
+    },
+    {
+     "arm": "V3_500",
+     "epochs": 500,
+     "location": {
+      "ckpt": "best.pt",
+      "server_dir": "RAE2822/results/rae2822_point_r1/RAE_POINT_WNO_s{seed}"
+     },
+     "model": {
+      "kernel": "v3",
+      "level": 1
+     },
+     "params_trainable_real": 28487140,
+     "role": "CONTEXT (different epochs, descriptive only): existing RAE_POINT_WNO_s* (500 epochs)",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "reused"
+    },
+    {
+     "arm": "FNO_500",
+     "epochs": 500,
+     "location": {
+      "ckpt": "best.pt",
+      "server_dir": "RAE2822/results/rae2822_point_r1/RAE_POINT_FNO_s{seed}"
+     },
+     "model": {
+      "kernel": "fno",
+      "modes": [
+       34,
+       34
+      ]
+     },
+     "params_trainable_real": 28487140,
+     "role": "CONTEXT (different epochs, descriptive only): existing RAE_POINT_FNO_s* (500 epochs)",
+     "seeds": [
+      0,
+      1,
+      2
+     ],
+     "status": "reused"
+    }
+   ],
+   "epochs": 1000,
+   "label": "RAE2822, 2-D fixed geometry, (M_inf, alpha) varied",
+   "pairs": [
+    {
+     "a": "V2J2",
+     "b": "FNO34",
+     "id": "RAE-MAIN",
+     "kind": "main",
+     "note": "exactly equal parameters"
+    },
+    {
+     "a": "V2J2",
+     "b": "V3",
+     "id": "RAE-CTX-V3",
+     "kind": "optional_context",
+     "note": "only if V3 is trained"
+    },
+    {
+     "a": "V3_500",
+     "b": "FNO_500",
+     "id": "RAE-CTX-500",
+     "kind": "context",
+     "note": "existing 500-epoch pair"
+    }
+   ],
+   "split": "851/183/183 (test never loaded)"
+  }
+ },
+ "frozen_before_training": true,
+ "matching_rule": "FNO modes (m1, m2) = V2 coefficient grid (X_J, Y_J) -> 4 * width^2 * X_J * Y_J real kernel weights per layer in both cores; every other module identical -> equal totals (counted, see params_trainable_real)",
+ "package": "pointwno_v2_shock_benchmark_r1",
+ "registered": "2026-11-11",
+ "registry_id": "pointwno_v2_shock_benchmark_r1_registry_v1",
+ "seeds": [
+  0,
+  1,
+  2
+ ],
+ "test_policy": "no test case is evaluated by this package; test use needs a separate approved package",
+ "v2_definition": "wno_variants.V2Conv (sha256 5a8c8a3c24909441f40276d40db2f8a705ae63ec58aaceed425b1b17f990c4f8), numerically identical forward to the official csccm-iitd WNO Version 2.0.0 WaveConv2d; exact-adjoint DWT/IDWT (audit/audit_v2_source.py)"
+}

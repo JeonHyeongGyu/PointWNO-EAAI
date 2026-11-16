@@ -1,0 +1,11 @@
+{
+ "arm": "FNOM",
+ "best_epoch": 101,
+ "best_sha256": "b9bc86e4ecdd7726e298b4f37ccdb65b904c50dc05dd4d4efa65cb9029194581",
+ "eval_version": "bm_naca_eval_v1",
+ "kind": "new",
+ "model_id": "BM_NACA_FNOM_s2",
+ "params_trainable_real": 21801731,
+ "run_dir": "results/revision_2026/pointwno_v2_shock_benchmark_r1/naca/runs/BM_NACA_FNOM_s2",
+ "seed": 2
+}

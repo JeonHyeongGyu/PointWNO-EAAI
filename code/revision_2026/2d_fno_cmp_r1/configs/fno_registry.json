@@ -1,0 +1,348 @@
+{
+ "registry_id": "fno2d_cmp_r1_v1",
+ "registered": "2026-11-01",
+ "status_note": "2D FNO comparison stage, pre-registered BEFORE any FNO comparison run. Design for a fair WNO / FNO comparison at the capacity of the selected WNO (C3: 6 layers x width 32, 28,486,403 trainable real parameters), not a reproduction of an earlier FNO run. config = config of the WNO C3 trial registry (capacity study) without the seed; split, train-only normalization of the manuscript loader, targets, loss, Adam, StepLR + min_lr, batch, epochs, checkpoint rule and test blocking are those of C3. WNO C3 seeds 0 / 1 / 2 are REUSED (never retrained). The C3 3-seed means were known when this registry was written (reported by the author 2026-11-01); the FNO configurations were fixed by the rules in 'trials[].design', not by any FNO result of this stage.",
+ "config": {
+  "epochs": 500,
+  "batch": 4,
+  "lr": 0.001,
+  "step_size": 100,
+  "gamma": 0.5,
+  "min_lr": 1e-05,
+  "grid_h": 128,
+  "grid_w": 96,
+  "grid_range": [
+   1.0,
+   1.0
+  ],
+  "wavelet": "db2",
+  "wno_level": 1,
+  "wno_width": 32,
+  "wno_layers": 6,
+  "grad_weight": 0.0,
+  "knn_k": 6,
+  "source_of_values": "manuscript run log 'Configuration:' block (db2, level 1, batch 4, step 100, gamma 0.5, min_lr 1e-5, grad_weight 0, knn_k 6) + script argparse defaults for the values the log does not print (width 128, 6 layers, grid 128x96, grid_range (1,1), lr 1e-3, epochs 500, seed 0); width / layers confirmed by the pcwno.pt state_dict shapes"
+ },
+ "config_source": {
+  "registry": "code/revision_2026/2d_capacity_r1/configs/trials/CAP_C3_L6W32.json",
+  "sha256": "199eb265a7ec93b00e9187b97f57e83a2f9ff2e0af1dd3f8f567272c9ac9819a",
+  "note": "wno_width / wno_layers / wavelet / wno_level are used ONLY for the C3-identical construction of LPE, FP and head (train_fno2d.build_model); the WNO core built there is discarded before training"
+ },
+ "fno_core_init_seed_offset": 1000,
+ "fno_core": {
+  "class": "pwno2d.models.FNO2dGridCore",
+  "file": "code/pwno2d/models.py",
+  "sha256": "4fa4947ab4d568553583241a92b01cdff50508ce2222bcbeeaf3cc93992fe81b",
+  "same_file_as_B2": true,
+  "operator": "standard FNO SpectralConv2d: rfft2, two corner blocks [:m1, :m2] and [-m1:, :m2] with complex weights (init scale/(Cin*Cout) * randn), irfft2; + 1x1 Conv2d; Mish between layers; fc0 / fc1 / fc2 as WNO2d",
+  "latent_grid": "the same 128 x 96 VRG nodes in the same radial-shell (ring x angle) tensor order as WNO C3 (PCWNO.forward / grid_xy_hw_from_ref). FNO B2 used the Cartesian order."
+ },
+ "params_trainable_real_C3": 28486403,
+ "smoke_epochs": 2,
+ "npz_sha256": "af48dba038e033d62ecb3bd0dd4cbea32f3ccbcf37d3f36f0a3848e19fce8963",
+ "split": {
+  "rule": "manuscript script make_split: np.random.default_rng(0) over the cases except 60 and 118, which are forced into test; 96 / 12 / 12",
+  "train_idx": [
+   100,
+   66,
+   36,
+   113,
+   1,
+   23,
+   13,
+   16,
+   97,
+   27,
+   5,
+   83,
+   102,
+   44,
+   69,
+   99,
+   92,
+   116,
+   98,
+   86,
+   72,
+   108,
+   20,
+   34,
+   87,
+   10,
+   39,
+   75,
+   53,
+   88,
+   82,
+   11,
+   50,
+   8,
+   9,
+   37,
+   22,
+   19,
+   65,
+   106,
+   112,
+   4,
+   25,
+   91,
+   94,
+   52,
+   68,
+   109,
+   3,
+   55,
+   81,
+   42,
+   15,
+   30,
+   2,
+   35,
+   73,
+   110,
+   43,
+   17,
+   89,
+   28,
+   93,
+   18,
+   6,
+   67,
+   24,
+   85,
+   57,
+   21,
+   103,
+   84,
+   76,
+   47,
+   0,
+   61,
+   71,
+   63,
+   45,
+   101,
+   26,
+   51,
+   49,
+   95,
+   111,
+   114,
+   40,
+   62,
+   12,
+   117,
+   32,
+   115,
+   90,
+   46,
+   58,
+   14
+  ],
+  "val_idx": [
+   74,
+   38,
+   105,
+   31,
+   107,
+   48,
+   78,
+   77,
+   7,
+   104,
+   64,
+   119
+  ],
+  "test_idx": [
+   60,
+   118,
+   70,
+   79,
+   59,
+   54,
+   29,
+   41,
+   56,
+   33,
+   80,
+   96
+  ],
+  "source": "manuscript run log lines 9-16; identical to splits/2d_orig_rng0_forced60_118.json"
+ },
+ "checkpoint_policy": "pcwno_best.pt = model state_dict at the first epoch with the minimum validation total loss (masked per-case MSE averaged over the 12 validation cases; strict <), exactly the manuscript rule; last_model.pt = weights after epoch 500 (added, weights only); no optimizer state, no resume",
+ "test_policy": "test cases are overwritten with NaN / mask 0 after loading; no test dataset, loader or evaluation exists in this package",
+ "precision_policy": "PyTorch defaults (as the manuscript run); flags recorded in run_meta.json",
+ "trials": [
+  {
+   "id": "FNO_F1_L6W32M34",
+   "arm": "F1",
+   "role": "PRIMARY comparison arm",
+   "fno": {
+    "width": 32,
+    "layers": 6,
+    "modes": [
+     34,
+     34
+    ]
+   },
+   "design": "depth and width of WNO C3 (6 x 32); Fourier modes 34 x 34 = the modes of the existing PyTorch FNO (B2 / fno_matched / fno_small_matched), unchanged. With these modes one FNO layer has 2*W^2*34*34 complex weights = 8*W^2*17*17 of one WNO layer (db2, level 1, 17 x 17 per sub-band) at ANY width, which is why the total equals C3; modes were not re-tuned to match.",
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "params_trainable_real": 28486403,
+   "param_groups": {
+    "lpe": 17248,
+    "operator_layers": 28416192,
+    "lift_projection": 28000,
+    "head": 24963,
+    "other": 0,
+    "total": 28486403
+   },
+   "params_diff_vs_C3": 0,
+   "params_diff_vs_C3_pct": 0.0,
+   "ckpt_bytes_expected": 114162143,
+   "ckpt_bytes_measured_with": "torch 2.8.0+cu128, CPU, state_dict after one forward"
+  },
+  {
+   "id": "FNO_F2_L4W83M16",
+   "arm": "F2",
+   "role": "SECONDARY (sensitivity) arm",
+   "fno": {
+    "width": 83,
+    "layers": 4,
+    "modes": [
+     16,
+     16
+    ]
+   },
+   "design": "depth 4 and modes 16 x 16 of the manuscript TensorFlow PointFNO core (CFD_model_v5_FNO_orig4.py: width 128, 4 layers, 16 x 16), width reduced to the integer whose total is closest to C3 (82: -2.91 %, 83: -0.54 %, 84: +1.87 %). Only the core size is taken over: no BatchNorm / ELU / sigmoid output (common PyTorch pipeline, Mish as WNO), as fno_tfcore.",
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "params_trainable_real": 28333548,
+   "param_groups": {
+    "lpe": 17248,
+    "operator_layers": 28245232,
+    "lift_projection": 46105,
+    "head": 24963,
+    "other": 0,
+    "total": 28333548
+   },
+   "params_diff_vs_C3": -152855,
+   "params_diff_vs_C3_pct": -0.537,
+   "ckpt_bytes_expected": 113547847,
+   "ckpt_bytes_measured_with": "torch 2.8.0+cu128, CPU, state_dict after one forward"
+  }
+ ],
+ "wno_reference": {
+  "config": "C3",
+  "id": "CAP_C3_L6W32",
+  "params_trainable_real": 28486403,
+  "runs": {
+   "0": {
+    "dir": "results/capacity_r1/CAP_C3_L6W32/seed0",
+    "registry": "code/revision_2026/2d_capacity_r1/configs/trials/CAP_C3_L6W32.json",
+    "registry_sha256": "199eb265a7ec93b00e9187b97f57e83a2f9ff2e0af1dd3f8f567272c9ac9819a",
+    "gpumon_dir": "results/capacity_r1_gpumon",
+    "gpumon_prefix": "train_CAP_C3_L6W32_"
+   },
+   "1": {
+    "dir": "results/capacity_r1_seeds/CAP_C3_L6W32/seed1",
+    "registry": "code/revision_2026/2d_capacity_seeds_r1/configs/seeds/CAP_C3_L6W32_seed1.json",
+    "registry_sha256": "1c1bbb9e5b40240ec00885ce9587f29cade1986da1ef8faf96db3123d3e181a4",
+    "gpumon_dir": "results/capacity_r1_seeds_gpumon",
+    "gpumon_prefix": "train_CAP_C3_L6W32_seed1_"
+   },
+   "2": {
+    "dir": "results/capacity_r1_seeds/CAP_C3_L6W32/seed2",
+    "registry": "code/revision_2026/2d_capacity_seeds_r1/configs/seeds/CAP_C3_L6W32_seed2.json",
+    "registry_sha256": "8fee2668d8939180e691c82a8b171f98818e0eaa87bf810e9df69d35b2b71c2d",
+    "gpumon_dir": "results/capacity_r1_seeds_gpumon",
+    "gpumon_prefix": "train_CAP_C3_L6W32_seed2_"
+   }
+  },
+  "runner_sha256": "db778d804802b8ca1376a1a15726cec4181dc5d922a7320d0dedc96ccd697302",
+  "backward": "r1_exact_autograd_v1",
+  "stage1_seed0": {
+   "best_val_loss": 0.00296982,
+   "val_NRMSE_mean3": 0.04247957,
+   "source": "code/revision_2026/2d_capacity_seeds_r1/configs/seed_registry.json (stage-1 record)"
+  },
+  "author_reported_3seed_mean": {
+   "best_val_loss": 0.0027048468,
+   "val_NRMSE_mean3": 0.0408868631,
+   "source": "author's message 2026-11-01; the C3 seed 1 / 2 run files are not in the local workspace; collect_fno.py recomputes both values from the run directories and reports agreement"
+  },
+  "policy": "read only; never retrained, never overwritten"
+ },
+ "existing_fno_results_reference_only": [
+  {
+   "name": "B2 (fno_cart)",
+   "model": "fno_matched_vrgcart: width 128, 6 layers, modes 34 x 34, Cartesian VRG order",
+   "params_trainable_real": 454761059,
+   "seed": 0,
+   "server_dir": "results/ext_2d/ext1_lp1/.../fno_matched_vrgcart/seed0/",
+   "local_copy": "results/revision_2026/server_val/B2/",
+   "engine": "pwno2d engine (code/scripts/train_2d_ext.py), dedicated DataLoader generator, best.pt by val_rmse",
+   "val": {
+    "best_epoch_by_val_rmse": 185,
+    "x_momentum": 0.07461734474009364,
+    "y_momentum": 0.021301319090626946,
+    "pressure_coefficient": 0.010351828289304364,
+    "val_loss_at_best": 0.002069090687048932
+   },
+   "use": "reference only; not part of the paired comparison (different engine, selection rule, VRG order, size, single seed)"
+  },
+  {
+   "name": "fno_radial (A1 baseline fno_matched)",
+   "model": "width 128, 6 layers, modes 34 x 34, radial-shell VRG order",
+   "params_trainable_real": 454761059,
+   "seed": 0,
+   "server_dir": "results/a1_2d/base/2d_orig_rng0_forced60_118/fno_matched/seed0/",
+   "local_copy": null,
+   "use": "reference only; files only on the server; same engine / selection caveats as B2"
+  },
+  {
+   "name": "manuscript PointFNO (TensorFlow)",
+   "model": "width 128, 4 layers, modes 16 x 16, BatchNorm + ELU, sigmoid output",
+   "use": "not comparable (15,000 sampled points, all-data normalization, other split and VRG, batch 1, restarted schedule, other targets and metric; docs/RESULT_REPRODUCIBILITY_AUDIT.md 2.4); not retrained"
+  }
+ ],
+ "output_roots": {
+  "train": "results/fno2d_cmp_r1/<trial>/seed<s>/",
+  "smoke": "results/fno2d_cmp_r1_smoke/<trial>/seed<s>/smoke/",
+  "smoke_gate": "results/fno2d_cmp_r1_smoke/gates/<trial>_seed<s>.json",
+  "gpu_monitor": "results/fno2d_cmp_r1_gpumon/",
+  "summary": "results/fno2d_cmp_r1_summary/<timestamp>/"
+ },
+ "measurements": {
+  "parameters": "params_trainable_real (complex = 2 real) and param_groups, from the built model (run_meta.json)",
+  "gpu_memory": "peak_cuda_mem_mb = torch.cuda.max_memory_allocated (val_summary.json) + nvidia-smi memory.used every 5 s",
+  "time": "epoch_sec (metrics.csv), train_sec (val_summary.json)",
+  "validation": "best_val_loss, best_epoch, per-target case-mean NRMSE of pcwno_best.pt and their mean (mean3), per case"
+ },
+ "analysis": {
+  "primary": "F1 vs WNO C3 on the 12 validation cases, seeds 0 / 1 / 2 (same seed = same LPE / FP / head initial values and the same global RNG stream, i.e. the same shuffle order, as long as both runs draw the same numbers per step). Per arm: mean and sample std (ddof 1) over the 3 seeds of best validation loss, mean3 NRMSE and each target. Paired: FNO - WNO per seed (3 differences, no test of significance with n = 3) and per validation case on seed-mean values (12 pairs: mean difference, 95 % t interval, exact sign-flip permutation p over 2^12, case counts).",
+  "secondary": "F2 vs C3 and F2 vs F1 in the same format; reported in full whether run or not ('not run' if the author does not submit it).",
+  "decision_language": "no superiority or equivalence claim from 3 seeds and 12 validation cases; differences whose interval includes 0 are reported as 'no detectable difference'; the result is reported whichever arm is lower",
+  "test": "never: test cases blocked in every run; no test evaluation in this stage"
+ },
+ "pinned_sha256": {
+  "code/revision_2026/2d_original_r1/train_orig2d.py": "db778d804802b8ca1376a1a15726cec4181dc5d922a7320d0dedc96ccd697302",
+  "code/revision_2026/2d_original_r1/vendored/pcwno_vrg_lpe_torch_airfoil_momentum_allpoints_fromdat_masked_steplr.py": "15944876b75a08d89af10b5db27c5f3b7a6ac72092201b67cb3ce2d93279a5d7",
+  "code/third_party/pointwno2d_original/pcwno_vrg_lpe_torch_airfoil_momentum_fno_same.py": "c825867678dcb875d3ec783f82ff62b2eba220af0df368ffee8b6f8b3e4d8e24",
+  "code/third_party/pointwno2d_original/wavelet_convolution_v3.py": "50b9fcdde89d63a2c73252e828149fc32b81ebe8e533b22f81125285a702f69b",
+  "code/revision_2026/2d_recovery/r1_exact_backward/wno2d_r1.py": "3cb8193d7f1a45950eeaf574e7083ca0348c39421f8cae32da6071a3dcf481a3",
+  "code/revision_2026/3d_recovery/r3/wavelet_exact.py": "6065ecccacc211dbece855fac6b2855e14c13388d7f0c7fd8ddcfe8c5117b8db",
+  "code/pwno2d/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "code/pwno2d/models.py": "4fa4947ab4d568553583241a92b01cdff50508ce2222bcbeeaf3cc93992fe81b",
+  "code/revision_2026/2d_capacity_r1/configs/trials/CAP_C3_L6W32.json": "199eb265a7ec93b00e9187b97f57e83a2f9ff2e0af1dd3f8f567272c9ac9819a",
+  "code/revision_2026/2d_capacity_seeds_r1/configs/seeds/CAP_C3_L6W32_seed1.json": "1c1bbb9e5b40240ec00885ce9587f29cade1986da1ef8faf96db3123d3e181a4",
+  "code/revision_2026/2d_capacity_seeds_r1/configs/seeds/CAP_C3_L6W32_seed2.json": "8fee2668d8939180e691c82a8b171f98818e0eaa87bf810e9df69d35b2b71c2d"
+ }
+}

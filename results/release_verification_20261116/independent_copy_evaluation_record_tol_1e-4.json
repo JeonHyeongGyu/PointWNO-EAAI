@@ -1,0 +1,31 @@
+{
+ "device": "cuda",
+ "evaluated": [
+  "BM_NACA_V2J2_s0",
+  "BM_NACA_FNOM_s1"
+ ],
+ "failed": [
+  "BM_NACA_V2J2_s1",
+  "BM_NACA_V2J2_s2",
+  "BM_NACA_FNOM_s0",
+  "BM_NACA_FNOM_s2"
+ ],
+ "gpu": "NVIDIA GeForce RTX 4060 Ti",
+ "note": "re-evaluation with this repository; not the official records",
+ "release_dependencies": {
+  "wno2d_r1": {
+   "status": "placeholder (not released; unused by V2J2 / FNOM)",
+   "training_sha256": "3cb8193d7f1a45950eeaf574e7083ca0348c39421f8cae32da6071a3dcf481a3"
+  },
+  "wno_upstream": {
+   "commit": "fa6b5a79ad97ad5c2f8ee3773fe3c732d344dee3",
+   "path": "wavelet_convolution_v3.py",
+   "repository": "https://github.com/csccm-iitd/WNO",
+   "sha256": "5b80065afdcf2a24ce1b9e60d946132fa4d7a3da54a285bfa2055d32bac0e3b6",
+   "training_used_modified_copy_sha256": "50b9fcdde89d63a2c73252e828149fc32b81ebe8e533b22f81125285a702f69b",
+   "used_for": "code/third_party/pointwno2d_original/wavelet_convolution_v3.py"
+  }
+ },
+ "reload_tol": 0.0001,
+ "torch": "2.8.0+cu128"
+}

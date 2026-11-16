@@ -1,0 +1,7 @@
+wavelet_convolution_v3 5b80065afdcf
+BM_NACA_V2J2_s0 params 21801731 loss 2.0968550816e-03 out 6d7c0d4c4806840f grad b19aad3c8ede7cb0
+BM_NACA_V2J2_s1 params 21801731 loss 2.1067070775e-03 out cdaadbbc945f5ebe grad d41fc3ca46497258
+BM_NACA_V2J2_s2 params 21801731 loss 2.2449784447e-03 out 51397e741f4b327d grad 3962aef8831c85b7
+BM_NACA_FNOM_s0 params 21801731 loss 4.1302209720e-03 out 3b521a1cd4c60d0f grad efd280ab23b50d31
+BM_NACA_FNOM_s1 params 21801731 loss 3.5303144250e-03 out 57f56cbb103ab5d8 grad 8b4ca32a2828a9de
+BM_NACA_FNOM_s2 params 21801731 loss 4.9831015058e-03 out 22dcc1bc82b317e6 grad ab97438becef8c75

@@ -1,0 +1,18 @@
+{
+ "best_epoch": 490,
+ "best_sha256": "d0c6a327e0c8118b7154962fea1e455df598f85962c1484c9e06a218bdc5d8f3",
+ "best_val_loss": 0.0016093179971600573,
+ "epochs_completed": 500,
+ "n_val_cases": 12,
+ "peak_alloc_mib_max": 17473.0,
+ "rec_sha": "ce910f2fcfbed8c6a551605731c8228b48b4923333d3a9082669f0148b794363",
+ "run_id": "BM_NACA_V2J2_s0",
+ "test_evaluated": false,
+ "train_s_per_epoch_median": 4.678,
+ "train_s_total": 2356.441,
+ "val_case_mean_NRMSE": {
+  "pressure_coefficient": 0.012076281166325012,
+  "x_momentum": 0.06474530231207609,
+  "y_momentum": 0.021693443413823843
+ }
+}

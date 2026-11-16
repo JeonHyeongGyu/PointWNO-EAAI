@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite the article below. The article is under revision; no DOI has been assigned yet."
+title: "PointWNO-EAAI: code, data and trained models"
+type: software
+authors:
+  - family-names: Jeon
+    given-names: Hyeong-gyu
+    affiliation: "Data-Driven Simulation and Design Optimization Laboratory, Gwangju Institute of Science and Technology"
+  - family-names: Choi
+    given-names: Seongim
+    affiliation: "Data-Driven Simulation and Design Optimization Laboratory, Gwangju Institute of Science and Technology"
+repository-code: "https://github.com/JeonHyeongGyu/PointWNO-EAAI"
+preferred-citation:
+  type: article
+  title: "A Point-Cloud-Based Wavelet Neural Operator Framework for Aerodynamic Field Prediction on Variable Geometries"
+  authors:
+    - family-names: Jeon
+      given-names: Hyeong-gyu
+    - family-names: Choi
+      given-names: Seongim
+  journal: "Engineering Applications of Artificial Intelligence"
+  notes: "Manuscript EAAI-26-17015, under revision (not yet accepted)."

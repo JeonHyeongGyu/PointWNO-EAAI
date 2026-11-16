@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+# large files: distributed as release assets (see data/README.md, checkpoints/README.md)
+data/naca/*.npz
+checkpoints/**/*.pt
+# outputs of the reproduction scripts
+results/revision_2026/pointwno_v2_shock_benchmark_r1/reproduced/
+results/revision_2026/pointwno_v2_shock_benchmark_r1/naca/
+# external upstream WNO code: downloaded by tools/fetch_wno_upstream.py, never committed (no upstream license)
+external/*
+!external/README.md
+# research files that are deliberately NOT part of this release (WNO-derived); never re-add
+code/third_party/pointwno2d_original/wavelet_convolution_v3.py
+code/revision_2026/2d_recovery/
+**/wavelet_convolution_v3.py
+**/wno2d_r1.py
+*.patch
+*.diff
