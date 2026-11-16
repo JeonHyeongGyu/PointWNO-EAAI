@@ -32,6 +32,7 @@ interface; it contains no model code.
 | `evaluation/evaluate_released.py` | re-evaluation of the released checkpoints with the unchanged evaluator + comparison with the official records |
 | `training/train_released.py` | launcher of the unchanged trainer `train_naca_bm.py` (after `pointwno._deps.activate()`) |
 | `tools/fetch_wno_upstream.py` | download + SHA-256 / git-blob verification of the upstream WNO file |
+| `tools/fetch_release_assets.py` | download + SHA-256 verification of the release assets (dataset, checkpoints) |
 | `tools/export_normalization_stats.py`, `tools/verify_release.py`, `tools/make_release_manifest.py` | normalization statistics; release manifest check / generation |
 | `tests/test_release.py` | CPU release checks |
 

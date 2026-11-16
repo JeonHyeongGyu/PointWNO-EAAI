@@ -36,8 +36,8 @@ What is taken from prior work and what is new:
 | Released | Content |
 |---|---|
 | Code | the training and evaluation code of the airfoil-family shock benchmark (canonical PointWNO vs PointFNO), byte-identical to the files recorded in the training runs, **except two WNO-derived files that are not redistributed** (see *Third-party WNO dependency*) |
-| Data | the generated 2-D NACA 4-digit dataset (120 cases), split, normalization statistics (`data/README.md`) |
-| Models | 6 checkpoints: PointWNO and PointFNO × 3 seeds (`checkpoints/README.md`) |
+| Data | the generated 2-D NACA 4-digit dataset (120 cases; release asset of [v1.0.0](https://github.com/JeonHyeongGyu/PointWNO-EAAI/releases/tag/v1.0.0)), split, normalization statistics (`data/README.md`) |
+| Models | 6 checkpoints: PointWNO and PointFNO × 3 seeds (release assets of [v1.0.0](https://github.com/JeonHyeongGyu/PointWNO-EAAI/releases/tag/v1.0.0); `checkpoints/README.md`) |
 | Records | official validation evaluation records of these 6 models and the frozen benchmark collector output |
 
 **Not in this repository:** any code of the official WNO repository (one of its files must be downloaded separately,
@@ -115,11 +115,10 @@ python -B tools/fetch_wno_upstream.py
 
 All commands are run from the repository root. Set `PYTHONDONTWRITEBYTECODE=1` if you want no `__pycache__`.
 
-1. **Get the data and checkpoints.** Download `Data_allpoints_xymomcp_from_dat.npz` into `data/naca/` and each
-   `pcwno_best.pt` into its run directory `checkpoints/naca/BM_NACA_<arm>_s<seed>/` (release assets; see the two README
-   files). Check them:
+1. **Get the data and checkpoints** (release [v1.0.0](https://github.com/JeonHyeongGyu/PointWNO-EAAI/releases/tag/v1.0.0); about 594 MB) and check every file:
 
    ```bash
+   python -B tools/fetch_release_assets.py               # dataset + six checkpoints, SHA-256 checked, placed
    python -B tools/verify_release.py --require_assets   # SHA-256 of every file in SHA256SUMS.txt
    ```
 

@@ -6,7 +6,7 @@
 |---|---|
 | File | `data/naca/Data_allpoints_xymomcp_from_dat.npz` (69.5 MB) |
 | SHA-256 | `af48dba038e033d62ecb3bd0dd4cbea32f3ccbcf37d3f36f0a3848e19fce8963` |
-| Download | GitHub Release asset of this repository — **TODO(release-url): link to be added when the release is created** |
+| Download | release asset of [v1.0.0](https://github.com/JeonHyeongGyu/PointWNO-EAAI/releases/tag/v1.0.0): `python -B tools/fetch_release_assets.py --only data` (downloads, checks the SHA-256 and places the file) |
 | Cases | 120 NACA 4-digit airfoils, one flow condition each |
 | Solver | SU2, RANS, Spalart–Allmaras; M∞ = 0.65, Re = 1.5 × 10⁷, α = 3° (manuscript Section 3) |
 | Mesh | unstructured O-type mesh generated for each geometry (19,256–20,377 vertices); only points inside the window −0.5 ≤ x ≤ 1.5, −0.7 ≤ y ≤ 0.7 (chord-normalized) are stored |

@@ -13,8 +13,10 @@ original-PointUNet comparison.
 | `naca/BM_NACA_FNOM_s1` | PointFNO | 1 | 21,801,731 | 102 | `481a1ce97090a465e94aea00214d29c279528c44c161b5e797f2b60c1bd19dcb` |
 | `naca/BM_NACA_FNOM_s2` | PointFNO | 2 | 21,801,731 | 101 | `b9bc86e4ecdd7726e298b4f37ccdb65b904c50dc05dd4d4efa65cb9029194581` |
 
-* Each `pcwno_best.pt` (≈ 87 MB, a PyTorch `state_dict`) is distributed as a GitHub Release asset —
-  **TODO(release-url): link to be added when the release is created**. Place it in the directory of its run.
+* Each `pcwno_best.pt` (≈ 87 MB, a PyTorch `state_dict`) is distributed as an asset of release
+  [v1.0.0](https://github.com/JeonHyeongGyu/PointWNO-EAAI/releases/tag/v1.0.0) under the name `BM_NACA_<arm>_s<seed>_pcwno_best.pt` (asset names must be unique).
+  `python -B tools/fetch_release_assets.py --only checkpoints` downloads all six, checks their SHA-256 and places each
+  as `pcwno_best.pt` in the directory of its run.
 * The small run records in each directory are part of the repository: `run_meta.json` (configuration, environment,
   SHA-256 of every code file used for training), `metrics.csv` (per-epoch losses), `val_summary.json`, `complete.json`,
   `status.json`, `val_case_RMSE.csv`, `SHA256SUMS_run.txt`.
